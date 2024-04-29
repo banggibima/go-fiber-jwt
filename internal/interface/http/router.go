@@ -8,6 +8,7 @@ import (
 type Router struct {
 	App                      *fiber.App
 	UserHandler              *handler.UserHandler
+	TokenHandler             *handler.TokenHandler
 	AuthenticationMiddleware fiber.Handler
 }
 
@@ -25,6 +26,11 @@ func (r *Router) Public() {
 	auth := api.Group("/auth")
 	auth.Post("/login", r.UserHandler.Login)
 	auth.Post("/register", r.UserHandler.Register)
+
+	token := api.Group("/token")
+	token.Get("/:refresh_token", r.TokenHandler.ReadByRefreshToken)
+	token.Post("/", r.TokenHandler.Create)
+	token.Delete("/:refresh_token", r.TokenHandler.DeleteByRefreshToken)
 }
 
 func (r *Router) Protected() {

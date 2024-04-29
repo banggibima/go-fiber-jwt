@@ -6,6 +6,7 @@ import (
 	"github.com/banggibima/go-fiber-jwt/pkg/fiber"
 	"github.com/banggibima/go-fiber-jwt/pkg/gorm"
 	"github.com/banggibima/go-fiber-jwt/pkg/postgres"
+	"github.com/banggibima/go-fiber-jwt/pkg/redis"
 	"github.com/banggibima/go-fiber-jwt/pkg/viper"
 )
 
@@ -30,12 +31,17 @@ func main() {
 		panic(err)
 	}
 
+	r, err := redis.New(c)
+	if err != nil {
+		panic(err)
+	}
+
 	f, err := fiber.New(c)
 	if err != nil {
 		panic(err)
 	}
 
-	if err := http.NewServer(c, g, f).Start(); err != nil {
+	if err := http.NewServer(c, g, r, f).Start(); err != nil {
 		panic(err)
 	}
 }
